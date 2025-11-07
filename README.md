@@ -2,6 +2,10 @@
 
 A beautiful, responsive React + Tailwind CSS single-page website that displays live countdowns for all semester exams with a motivational and modern UI design.
 
+## 🌐 **🎯 Live Demo**
+
+👉 **[View the Live Countdown Website](https://semestercountdown.netlify.app/)**
+
 ## ✨ Features
 
 - **Live Countdown Timers**: Real-time countdown for each exam (Days : Hours : Minutes : Seconds)
