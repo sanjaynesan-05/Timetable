@@ -130,13 +130,16 @@ const motivationalQuotes: string[] = [
 ];
 
 const exams: Exam[] = [
+  // LAB EXAMS - BATCH 1
   {
     id: 1,
     subject: "Big Data Tools and Techniques LAB",
     date: "2025-11-11",
     time: "LAB",
     session: "",
-    fullTime: "LAB Exam"
+    fullTime: "LAB Exam",
+    type: "LAB",
+    batch: 1
   },
   {
     id: 2,
@@ -144,7 +147,9 @@ const exams: Exam[] = [
     date: "2025-11-14",
     time: "LAB",
     session: "",
-    fullTime: "LAB Exam"
+    fullTime: "LAB Exam",
+    type: "LAB",
+    batch: 1
   },
   {
     id: 3,
@@ -152,15 +157,50 @@ const exams: Exam[] = [
     date: "2025-11-15",
     time: "LAB",
     session: "",
-    fullTime: "LAB Exam"
+    fullTime: "LAB Exam",
+    type: "LAB",
+    batch: 1
   },
+  // LAB EXAMS - BATCH 2
+  {
+    id: 10,
+    subject: "Deep Learning LAB",
+    date: "2025-11-11",
+    time: "LAB",
+    session: "",
+    fullTime: "LAB Exam",
+    type: "LAB",
+    batch: 2
+  },
+  {
+    id: 11,
+    subject: "Full Stack Development LAB",
+    date: "2025-11-14",
+    time: "LAB",
+    session: "",
+    fullTime: "LAB Exam",
+    type: "LAB",
+    batch: 2
+  },
+  {
+    id: 12,
+    subject: "Big Data Tools and Techniques LAB",
+    date: "2025-11-15",
+    time: "LAB",
+    session: "",
+    fullTime: "LAB Exam",
+    type: "LAB",
+    batch: 2
+  },
+  // SEMESTER EXAMS
   {
     id: 4,
     subject: "Operating Systems",
     date: "2025-11-19",
     time: "09:30",
     session: "FN",
-    fullTime: "9:30 AM – 12:30 PM"
+    fullTime: "9:30 AM – 12:30 PM",
+    type: "SEM"
   },
   {
     id: 5,
@@ -168,7 +208,8 @@ const exams: Exam[] = [
     date: "2025-11-22",
     time: "09:30",
     session: "FN",
-    fullTime: "9:30 AM – 12:30 PM"
+    fullTime: "9:30 AM – 12:30 PM",
+    type: "SEM"
   },
   {
     id: 6,
@@ -176,7 +217,8 @@ const exams: Exam[] = [
     date: "2025-11-25",
     time: "14:00",
     session: "AN",
-    fullTime: "2:00 PM – 5:00 PM"
+    fullTime: "2:00 PM – 5:00 PM",
+    type: "SEM"
   },
   {
     id: 7,
@@ -184,7 +226,8 @@ const exams: Exam[] = [
     date: "2025-11-28",
     time: "09:30",
     session: "FN",
-    fullTime: "9:30 AM – 12:30 PM"
+    fullTime: "9:30 AM – 12:30 PM",
+    type: "SEM"
   },
   {
     id: 8,
@@ -192,7 +235,8 @@ const exams: Exam[] = [
     date: "2025-12-01",
     time: "09:30",
     session: "FN",
-    fullTime: "9:30 AM – 12:30 PM"
+    fullTime: "9:30 AM – 12:30 PM",
+    type: "SEM"
   },
   {
     id: 9,
@@ -200,7 +244,8 @@ const exams: Exam[] = [
     date: "2025-12-03",
     time: "09:30",
     session: "FN",
-    fullTime: "9:30 AM – 12:30 PM"
+    fullTime: "9:30 AM – 12:30 PM",
+    type: "SEM"
   }
 ];
 
@@ -271,19 +316,35 @@ const ExamCard = ({ exam, index, countdown }: { exam: Exam; index: number; count
 
       {/* Content Card */}
       <motion.div
-        whileHover={{ scale: 1.02 }}
+        whileHover={{ scale: 1.03, boxShadow: '0 20px 60px rgba(0, 0, 0, 0.8)' }}
+        transition={{ type: 'spring', stiffness: 300 }}
         className="flex-1 mb-12 md:mb-16"
       >
-        <div
-          className="relative overflow-hidden rounded-2xl p-6 md:p-8 backdrop-blur-xl border shadow-2xl"
+        <motion.div
+          initial={{ opacity: 0, rotateX: 30 }}
+          animate={{ opacity: 1, rotateX: 0 }}
+          transition={{ duration: 0.6, delay: index * 0.1 }}
+          className="relative overflow-hidden rounded-3xl p-6 md:p-8 backdrop-blur-2xl border-2 shadow-2xl group"
           style={{
-            background: "rgba(255, 255, 255, 0.05)",
-            borderColor: "rgba(255, 255, 255, 0.2)",
-            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5)",
+            transformPerspective: '1000px',
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02))",
+            borderColor: "rgba(255, 255, 255, 0.25)",
+            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.2)",
           }}
         >
+          {/* Animated gradient background */}
+          <motion.div
+            animate={{ backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'] }}
+            transition={{ duration: 8, repeat: Infinity }}
+            className={`absolute inset-0 bg-gradient-to-br ${gradientColor} opacity-5`}
+            style={{ backgroundSize: '400% 400%' }}
+          ></motion.div>
+
           {/* Gradient overlay */}
           <div className={`absolute inset-0 bg-gradient-to-br ${gradientColor} opacity-10`}></div>
+
+          {/* Top accent line */}
+          <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${gradientColor}`}></div>
 
           <div className="relative z-10">
             {/* Date */}
@@ -301,26 +362,79 @@ const ExamCard = ({ exam, index, countdown }: { exam: Exam; index: number; count
               {exam.session ? `${exam.session} Session • ${exam.fullTime}` : exam.fullTime}
             </p>
 
-            {/* Countdown Grid */}
-            <div className="grid grid-cols-4 gap-2 md:gap-3">
+            {/* Countdown Grid - Enhanced Style */}
+            <div className="grid grid-cols-4 gap-2 md:gap-4 mt-6 mb-4">
               {countdownItems.map((item, idx) => (
-                <div key={`countdown-${idx}`} className="text-center">
-                  <div className="bg-gradient-to-br from-purple-600/40 to-pink-600/40 backdrop-blur-sm rounded-lg p-2 md:p-3 mb-1 md:mb-2 border border-white/20">
-                    <span className="text-base md:text-lg font-bold text-white font-quicksand block">
+                <motion.div
+                  key={`countdown-${idx}`}
+                  className="text-center group"
+                  whileHover={{ scale: 1.08, y: -5 }}
+                  transition={{ type: 'spring', stiffness: 300 }}
+                >
+                  {/* Glow effect background */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${gradientColor} rounded-xl opacity-0 group-hover:opacity-30 blur-lg transition-opacity duration-300 -z-10`}></div>
+
+                  {/* Card */}
+                  <motion.div
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{ duration: 3, repeat: Infinity, delay: idx * 0.2 }}
+                    className={`relative bg-gradient-to-br ${gradientColor} rounded-xl p-4 md:p-5 mb-2 md:mb-3 border-2 border-white/30 shadow-xl overflow-hidden`}
+                  >
+                    {/* Animated gradient background */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse"></div>
+                    
+                    {/* Shine effect */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent transform -skew-x-12"></div>
+                    </div>
+
+                    {/* Number */}
+                    <motion.span
+                      key={item.value}
+                      initial={{ scale: 1.2, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="text-2xl md:text-3xl font-black text-white font-quicksand block drop-shadow-lg relative z-10"
+                    >
                       {String(item.value).padStart(2, '0')}
-                    </span>
-                  </div>
-                  <span className="text-xs text-gray-300 uppercase tracking-wider font-semibold">
+                    </motion.span>
+                  </motion.div>
+
+                  {/* Label */}
+                  <motion.span
+                    className="text-xs md:text-sm text-gray-200 uppercase tracking-widest font-bold drop-shadow-sm block"
+                    animate={{ opacity: [0.7, 1, 0.7] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: idx * 0.2 }}
+                  >
                     {item.label}
-                  </span>
-                </div>
+                  </motion.span>
+                </motion.div>
               ))}
             </div>
+            
+            {/* Motivational countdown message */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="text-center mt-4"
+            >
+              <p className={`text-sm md:text-base font-semibold bg-gradient-to-r ${gradientColor} text-transparent bg-clip-text animate-pulse`}>
+                ⏱️ Time to prepare and ace it!
+              </p>
+            </motion.div>
           </div>
 
           {/* Corner decoration */}
-          <div className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-br ${gradientColor} opacity-10 rounded-bl-full`}></div>
-        </div>
+          <motion.div
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 3, repeat: Infinity }}
+            className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${gradientColor} opacity-20 rounded-bl-full blur-2xl`}
+          ></motion.div>
+
+          {/* Bottom accent */}
+          <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${gradientColor}`}></div>
+        </motion.div>
       </motion.div>
     </motion.div>
   );
@@ -331,6 +445,7 @@ const App = () => {
   const [countdowns, setCountdowns] = useState<Record<number, Countdown>>({});
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
   const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(false);
+  const [selectedBatch, setSelectedBatch] = useState<1 | 2>(1);
 
   useEffect(() => {
     const quoteInterval = setInterval(() => {
@@ -523,54 +638,202 @@ const App = () => {
           </p>
         </motion.div>
 
-        {/* Timeline Section */}
-        <div className="max-w-4xl mx-auto">
+        {/* LAB EXAMS SECTION */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="max-w-4xl mx-auto mb-16"
+        >
+          <div className="mb-8">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 text-center font-quicksand">
+              🧪 LAB EXAMS
+            </h2>
+            
+            {/* Batch Toggle */}
+            <div className="flex justify-center gap-4 mb-8">
+              <motion.button
+                onClick={() => setSelectedBatch(1)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`px-8 py-3 rounded-2xl font-semibold transition-all duration-300 ${
+                  selectedBatch === 1
+                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
+                    : 'bg-white/10 text-gray-300 border border-white/20 hover:bg-white/20'
+                } backdrop-blur-xl`}
+              >
+                Batch 1
+              </motion.button>
+              <motion.button
+                onClick={() => setSelectedBatch(2)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`px-8 py-3 rounded-2xl font-semibold transition-all duration-300 ${
+                  selectedBatch === 2
+                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
+                    : 'bg-white/10 text-gray-300 border border-white/20 hover:bg-white/20'
+                } backdrop-blur-xl`}
+              >
+                Batch 2
+              </motion.button>
+            </div>
+          </div>
+
+          {/* Lab Exams Timeline */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
             className="relative"
           >
-            {exams.map((exam, index) => {
-              const examDateTime = new Date(`${exam.date}T${exam.time === 'LAB' ? '09:00' : exam.time}:00`);
-              const now = new Date();
-              const isCompleted = examDateTime <= now;
+            {exams
+              .filter(exam => exam.type === 'LAB' && exam.batch === selectedBatch)
+              .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+              .map((exam, index) => {
+                const examDateTime = new Date(`${exam.date}T${exam.time === 'LAB' ? '09:00' : exam.time}:00`);
+                const now = new Date();
+                const isCompleted = examDateTime <= now;
 
-              if (isCompleted) return null;
+                if (isCompleted) return null;
 
-              return (
-                <ExamCard key={exam.id} exam={exam} index={index} countdown={countdowns[exam.id] || { days: 0, hours: 0, minutes: 0, seconds: 0 }} />
-              );
-            })}
-
-            {/* Timeline End */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: exams.length * 0.1 }}
-              className="relative flex gap-4 md:gap-8"
-            >
-              <div className="flex flex-col items-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-400 rounded-full shadow-lg flex items-center justify-center text-2xl">
-                  ✅
-                </div>
-              </div>
-              <div className="flex-1 mb-12">
-                <div className="relative overflow-hidden rounded-2xl p-6 md:p-8 backdrop-blur-xl border"
-                  style={{
-                    background: "rgba(255, 255, 255, 0.05)",
-                    borderColor: "rgba(255, 255, 255, 0.2)",
-                    boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5)",
-                  }}>
-                  <div className="relative z-10">
-                    <h3 className="text-2xl font-bold text-white mb-2 font-quicksand">🎉 All Exams Complete!</h3>
-                    <p className="text-gray-300">You've made it through the semester! Time to celebrate! 🌟</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+                return (
+                  <ExamCard key={exam.id} exam={exam} index={index} countdown={countdowns[exam.id] || { days: 0, hours: 0, minutes: 0, seconds: 0 }} />
+                );
+              })}
           </motion.div>
-        </div>
+        </motion.div>
+
+        {/* SEMESTER EXAMS SECTION */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="max-w-4xl mx-auto mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 text-center font-quicksand">
+            📚 SEMESTER EXAMS
+          </h2>
+
+          {/* Semester Exams Timeline */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+            className="relative"
+          >
+            {exams
+              .filter(exam => exam.type === 'SEM')
+              .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+              .map((exam, index) => {
+                const examDateTime = new Date(`${exam.date}T${exam.time === 'LAB' ? '09:00' : exam.time}:00`);
+                const now = new Date();
+                const isCompleted = examDateTime <= now;
+
+                if (isCompleted) return null;
+
+                return (
+                  <ExamCard key={exam.id} exam={exam} index={index} countdown={countdowns[exam.id] || { days: 0, hours: 0, minutes: 0, seconds: 0 }} />
+                );
+              })}
+
+            {/* Check if all exams are completed */}
+            {exams
+              .filter(exam => exam.type === 'SEM')
+              .every(exam => {
+                const examDateTime = new Date(`${exam.date}T${exam.time === 'LAB' ? '09:00' : exam.time}:00`);
+                return examDateTime <= new Date();
+              }) && (
+              /* Timeline End - All Exams Complete */
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.8, type: 'spring', stiffness: 100 }}
+                className="relative flex gap-4 md:gap-8"
+              >
+                <div className="flex flex-col items-center">
+                  <motion.div
+                    animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.1, 1] }}
+                    transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 2 }}
+                    className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full shadow-2xl flex items-center justify-center text-4xl"
+                  >
+                    ✅
+                  </motion.div>
+                </div>
+                <div className="flex-1 mb-12">
+                  <motion.div
+                    initial={{ y: 10 }}
+                    animate={{ y: 0 }}
+                    className="relative overflow-hidden rounded-3xl p-8 md:p-10 backdrop-blur-2xl border-2 shadow-2xl"
+                    style={{
+                      background: "linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.05))",
+                      borderColor: "rgba(74, 222, 128, 0.3)",
+                      boxShadow: "0 20px 60px rgba(34, 197, 94, 0.3)",
+                    }}
+                  >
+                    {/* Animated success background */}
+                    <motion.div
+                      animate={{ opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="absolute inset-0 bg-gradient-to-r from-green-500/20 via-emerald-500/20 to-green-500/20"
+                    ></motion.div>
+
+                    {/* Celebration confetti effect */}
+                    <div className="absolute inset-0 overflow-hidden">
+                      {[...Array(5)].map((_, i) => (
+                        <motion.div
+                          key={i}
+                          animate={{ y: [0, -100], opacity: [1, 0], rotate: [0, 360] }}
+                          transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                          className="absolute text-2xl"
+                          style={{ left: `${20 + i * 15}%`, bottom: 0 }}
+                        >
+                          {'🎉🎊🌟💫✨'[i]}
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    <div className="relative z-10">
+                      <motion.h3
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="text-3xl md:text-4xl font-black text-white mb-3 font-quicksand drop-shadow-lg"
+                      >
+                        🎉 All Exams Complete!
+                      </motion.h3>
+                      <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                        className="text-lg md:text-xl text-green-200 font-semibold mb-3"
+                      >
+                        You've made it through the semester! 🌟
+                      </motion.p>
+                      <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.7 }}
+                        className="text-base md:text-lg text-green-100"
+                      >
+                        Time to celebrate! You worked hard and you deserve it! 🚀
+                      </motion.p>
+                    </div>
+
+                    {/* Corner decoration */}
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                      className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-green-400 to-emerald-400 opacity-20 rounded-bl-full blur-3xl"
+                    ></motion.div>
+
+                    {/* Bottom accent */}
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 to-emerald-500"></div>
+                  </motion.div>
+                </div>
+              </motion.div>
+            )}
+          </motion.div>
+        </motion.div>
 
         {/* Footer */}
         <motion.footer
@@ -581,7 +844,7 @@ const App = () => {
         >
           <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 max-w-2xl mx-auto">
             <p className="text-gray-300 text-lg font-manrope">
-              📘 Crafted by <span className="text-purple-400 font-bold">Sanjai</span> | Success is built one exam at a time.
+              📘 Crafted with ❤️ <span className="text-purple-400 font-bold">Sanjai</span> | Success is built one exam at a time.
             </p>
           </div>
         </motion.footer>

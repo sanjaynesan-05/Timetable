@@ -12,4 +12,7 @@ export interface Exam {
   time: string;
   session: string;
   fullTime: string;
+  type: 'LAB' | 'SEM'; // LAB or SEMESTER exam
+  batch?: 1 | 2; // For LAB exams only
 }
+
