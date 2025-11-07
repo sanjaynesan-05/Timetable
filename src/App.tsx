@@ -326,11 +326,11 @@ const ExamCard = ({ exam, index, countdown }: { exam: Exam; index: number; count
   );
 };
 
-const MemoizedExamCard = React.memo(ExamCard);
-
 const App = () => {
   const [currentQuote, setCurrentQuote] = useState<number>(0);
   const [countdowns, setCountdowns] = useState<Record<number, Countdown>>({});
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
+  const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(false);
 
   useEffect(() => {
     const quoteInterval = setInterval(() => {
@@ -339,6 +339,78 @@ const App = () => {
 
     return () => clearInterval(quoteInterval);
   }, []);
+
+  // Notification permission handling
+  useEffect(() => {
+    if ('Notification' in window) {
+      setNotificationPermission(Notification.permission);
+    }
+  }, []);
+
+  // Notification scheduling
+  useEffect(() => {
+    if (!notificationsEnabled || notificationPermission !== 'granted') return;
+
+    const scheduleNotifications = () => {
+      const now = new Date();
+
+      exams.forEach((exam) => {
+        const examDateTime = new Date(`${exam.date}T${exam.time === 'LAB' ? '09:00' : exam.time}:00`);
+
+        if (examDateTime <= now) return; // Skip past exams
+
+        const timeDiff = examDateTime.getTime() - now.getTime();
+
+        // Schedule notifications for 1 day, 1 hour, and 15 minutes before
+        const notificationTimes = [
+          { delay: 24 * 60 * 60 * 1000, message: `📚 ${exam.subject} is tomorrow!` },
+          { delay: 60 * 60 * 1000, message: `⏰ ${exam.subject} starts in 1 hour!` },
+          { delay: 15 * 60 * 1000, message: `🚨 ${exam.subject} starts in 15 minutes! Get ready!` }
+        ];
+
+        notificationTimes.forEach(({ delay, message }) => {
+          if (timeDiff > delay) {
+            const notificationTime = examDateTime.getTime() - delay;
+            const timeoutId = setTimeout(() => {
+              new Notification('Exam Reminder', {
+                body: message,
+                icon: '/favicon.ico',
+                badge: '/favicon.ico',
+                tag: `exam-${exam.id}-${delay}`,
+                requireInteraction: delay <= 15 * 60 * 1000 // Keep 15-min notification visible
+              });
+            }, notificationTime - now.getTime());
+
+            // Store timeout ID for cleanup (in a real app, you'd want to persist this)
+            return () => clearTimeout(timeoutId);
+          }
+        });
+      });
+    };
+
+    scheduleNotifications();
+  }, [notificationsEnabled, notificationPermission, countdowns]);
+
+  const requestNotificationPermission = async () => {
+    if (!('Notification' in window)) {
+      alert('This browser does not support notifications');
+      return;
+    }
+
+    try {
+      const permission = await Notification.requestPermission();
+      setNotificationPermission(permission);
+      if (permission === 'granted') {
+        setNotificationsEnabled(true);
+        new Notification('Notifications Enabled! 🎉', {
+          body: 'You will now receive reminders for upcoming exams.',
+          icon: '/favicon.ico'
+        });
+      }
+    } catch (error) {
+      console.error('Error requesting notification permission:', error);
+    }
+  };
 
   useEffect(() => {
     const calculateAllCountdowns = (): void => {
@@ -401,6 +473,42 @@ const App = () => {
           </p>
         </motion.header>
 
+        {/* Notification Settings */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="max-w-4xl mx-auto mb-8"
+        >
+          <div className="flex justify-center">
+            <motion.button
+              onClick={requestNotificationPermission}
+              disabled={notificationPermission === 'denied'}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`px-6 py-3 rounded-2xl font-semibold transition-all duration-300 ${
+                notificationsEnabled
+                  ? 'bg-green-500/20 text-green-300 border border-green-500/30 hover:bg-green-500/30'
+                  : notificationPermission === 'denied'
+                  ? 'bg-red-500/20 text-red-300 border border-red-500/30 cursor-not-allowed'
+                  : 'bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30'
+              } backdrop-blur-xl shadow-lg`}
+            >
+              {notificationsEnabled
+                ? '🔔 Notifications Enabled'
+                : notificationPermission === 'denied'
+                ? '🚫 Notifications Blocked'
+                : '🔔 Enable Exam Notifications'
+              }
+            </motion.button>
+          </div>
+          {notificationPermission === 'default' && (
+            <p className="text-center text-sm text-gray-400 mt-2">
+              Get reminded about upcoming exams automatically
+            </p>
+          )}
+        </motion.div>
+
         {/* Motivational Quote */}
         <motion.div
           key={currentQuote}
@@ -431,7 +539,7 @@ const App = () => {
               if (isCompleted) return null;
 
               return (
-                <MemoizedExamCard key={exam.id} exam={exam} index={index} countdown={countdowns[exam.id] || { days: 0, hours: 0, minutes: 0, seconds: 0 }} />
+                <ExamCard key={exam.id} exam={exam} index={index} countdown={countdowns[exam.id] || { days: 0, hours: 0, minutes: 0, seconds: 0 }} />
               );
             })}
 
