@@ -216,34 +216,7 @@ const formatDate = (dateString: string): string => {
 };
 
 // Exam Card Component for Vertical Timeline Style
-const ExamCard = ({ exam, index }: { exam: Exam; index: number }) => {
-  const [countdown, setCountdown] = useState<Countdown>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-
-  useEffect(() => {
-    const calculateCountdown = (): void => {
-      const examDateTime = new Date(`${exam.date}T${exam.time === 'LAB' ? '09:00' : exam.time}:00`);
-      const now = new Date();
-      const difference = examDateTime.getTime() - now.getTime();
-
-      if (difference <= 0) {
-        setCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        return;
-      }
-
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-      setCountdown({ days, hours, minutes, seconds });
-    };
-
-    calculateCountdown();
-    const interval = setInterval(calculateCountdown, 1000);
-
-    return () => clearInterval(interval);
-  }, [exam.date, exam.time]);
-
+const ExamCard = ({ exam, index, countdown }: { exam: Exam; index: number; countdown: Countdown }) => {
   const countdownItems = [
     { label: 'Days', value: countdown.days },
     { label: 'Hours', value: countdown.hours },
@@ -353,8 +326,11 @@ const ExamCard = ({ exam, index }: { exam: Exam; index: number }) => {
   );
 };
 
+const MemoizedExamCard = React.memo(ExamCard);
+
 const App = () => {
   const [currentQuote, setCurrentQuote] = useState<number>(0);
+  const [countdowns, setCountdowns] = useState<Record<number, Countdown>>({});
 
   useEffect(() => {
     const quoteInterval = setInterval(() => {
@@ -362,6 +338,35 @@ const App = () => {
     }, 5000);
 
     return () => clearInterval(quoteInterval);
+  }, []);
+
+  useEffect(() => {
+    const calculateAllCountdowns = (): void => {
+      const now = new Date();
+      const newCountdowns: Record<number, Countdown> = {};
+
+      exams.forEach((exam) => {
+        const examDateTime = new Date(`${exam.date}T${exam.time === 'LAB' ? '09:00' : exam.time}:00`);
+        const difference = examDateTime.getTime() - now.getTime();
+
+        if (difference <= 0) {
+          newCountdowns[exam.id] = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+        } else {
+          const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+          newCountdowns[exam.id] = { days, hours, minutes, seconds };
+        }
+      });
+
+      setCountdowns(newCountdowns);
+    };
+
+    calculateAllCountdowns();
+    const countdownInterval = setInterval(calculateAllCountdowns, 1000);
+
+    return () => clearInterval(countdownInterval);
   }, []);
 
   return (
@@ -426,7 +431,7 @@ const App = () => {
               if (isCompleted) return null;
 
               return (
-                <ExamCard key={exam.id} exam={exam} index={index} />
+                <MemoizedExamCard key={exam.id} exam={exam} index={index} countdown={countdowns[exam.id] || { days: 0, hours: 0, minutes: 0, seconds: 0 }} />
               );
             })}
 
