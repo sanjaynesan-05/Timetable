@@ -844,7 +844,7 @@ const App = () => {
         >
           <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 max-w-2xl mx-auto">
             <p className="text-gray-300 text-lg font-manrope">
-              📘 Crafted with ❤️ <span className="text-red-400 font-bold">YOURS JSN</span> | Success is built one exam at a time.
+              📘 Crafted with ❤️ <span className="text-red-400 font-bold">YOURS Nesan</span> | Success is built one exam at a time.
             </p>
           </div>
         </motion.footer>
